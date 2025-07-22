@@ -13,6 +13,11 @@ founded_files_paths=""
 not_found_files=""
 
 for file_hash in "$@"; do
+    if [ $file_hash == "--force" ]; then
+        placeholder_for_force_argument="--force"
+        continue
+    fi
+
     file_relative_path=$(git rev-list --objects --all | grep $file_hash --color=always) 
     match_count=$(echo "$file_relative_path" | wc -l)
     if [ "$match_count" -eq 1 ]; then
@@ -62,8 +67,13 @@ fi
 
 for file_path in $founded_files_paths; do
     echo "Deleting file: $file_path"
-    git filter-repo --path $file_path --invert-paths
+    git filter-repo --path $file_path --invert-paths $placeholder_for_force_argument
 done
+
+if [ $? -ne 0 ]; then
+    echo "Error occurred while deleting files."
+    exit 1
+fi
 
 echo "You may want to update your origin repository:"
 echo -e "\t$ git push origin --force --all\n" \
