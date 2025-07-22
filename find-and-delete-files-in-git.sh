@@ -52,6 +52,11 @@ if [ -n "$founded_files" ]; then
 
 fi
 
+if [ -z "$founded_files" ]; then
+    echo "No files found to delete."
+    exit 0
+fi
+
 git filter-repo --version > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "Please install git-filter-repo to proceed."
