@@ -1,3 +1,4 @@
+#!/bin/bash
 git rev-list --objects --all --missing=print |
   git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
   sed -n 's/^blob //p' |
